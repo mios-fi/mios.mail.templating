@@ -9,5 +9,5 @@
     <description>A framework for generating templated emails.</description>
     <language>en</language>
   </metadata>
-	<files src="Templating\bin\Debug\Mios.Mail.Templating.dll" target="lib" /> 
+	<files src="Templating\bin\Release\Mios.Mail.Templating.dll" target="lib" /> 
 </package>
