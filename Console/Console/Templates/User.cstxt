@@ -1,0 +1,6 @@
+﻿@using ConsoleApp
+
+Hello @Model.Name
+Hi there @Model.Name,
+
+how are you today?
