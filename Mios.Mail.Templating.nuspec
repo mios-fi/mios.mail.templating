@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>mios.mail.templating</id>
@@ -7,8 +7,8 @@
     <description>Framework for working with email templates.</description>
     <language>en</language>
   </metadata>
-	<files>
-		<file src="Templating\bin\Release\*.dll" target="lib"/>
-		<file src="Templating\bin\Release\*.xml" target="lib"/>
-	</files>
+  <files>
+    <file src="Templating\bin\Release\*.dll" target="lib" />
+    <file src="Templating\bin\Release\*.xml" target="lib" />
+  </files>
 </package>
