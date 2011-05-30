@@ -12,7 +12,7 @@ namespace ConsoleApp {
 			new Program().Run();
 		}
 		public void Run() {
-			var factory = new RazorEmailTemplateFactory(typeof(User).Assembly);
+			var factory = new TypeBasedRazorEmailTemplateFactory();
 			var template = factory.Create<User>();
 			var from = new MailAddress("info@example.com");
 			var to = new MailAddress("bill@example.com");
@@ -30,8 +30,9 @@ namespace ConsoleApp {
 				htmlSource = "Html:\n" + new StreamReader(stream).ReadToEnd();
 				stream.Position = 0;
 			}
-			return String.Format("To: {0}\nFrom: {1}\nSubject: {2}\nBody:\n{3}", message.To[0], message.From, message.Subject,
-			                     message.Body)+htmlSource;
+			return String.Format(
+				"To: {0}\nFrom: {1}\nSubject: {2}\nBody:\n{3}", message.To[0], message.From, message.Subject,
+			  message.Body)+htmlSource;
 		}
 	}
 }

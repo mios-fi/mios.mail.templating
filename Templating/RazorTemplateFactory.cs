@@ -1,6 +1,6 @@
 ﻿using System;
+using System.CodeDom;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -20,39 +20,33 @@ namespace Mios.Mail.Templating {
 	}
 
 	public class RazorTemplateFactory {
-
-		private IList<Assembly> referencedAssemblies;
-		public IList<Assembly> ReferencedAssemblies { 
-			get { return referencedAssemblies; } 
+		public RazorTemplate<T> CreateTemplate<T>(TextReader sourceReader) {
+			return CreateTemplateImpl<RazorTemplate<T>>(sourceReader);
+		}
+		public DynamicRazorTemplate CreateDynamicTemplate(TextReader sourceReader) {
+			return CreateTemplateImpl<DynamicRazorTemplate>(sourceReader);
 		}
 
-		public RazorTemplateFactory() {
-			referencedAssemblies = new List<Assembly> {
-				typeof(RazorTemplateFactory).Assembly
-			};
+		private static T CreateTemplateImpl<T>(TextReader sourceReader) where T : class {
+			var host = new RazorEngineHost(new CSharpRazorCodeLanguage());
+			host.DefaultBaseClass = typeof(T).FullName;
+			host.NamespaceImports.Add("System");
+			var result = new RazorTemplateEngine(host).GenerateCode(sourceReader);
+			var templateAssembly = CompileTemplate(result.GeneratedCode);
+			var typeName = host.DefaultNamespace+"."+host.DefaultClassName;
+			return InstantiateTemplate<T>(templateAssembly, typeName);
 		}
 
-		public RazorTemplate<T> CreateTemplate<T>(TextReader sourceReader) where T : class {
-			// Generate code for the template
-			var engine = CreateEngine<T>();
-			var razorResult = engine.GenerateCode(sourceReader);
+		private static Assembly CompileTemplate(CodeCompileUnit codeCompileUnit) {
 			var codeProvider = new CSharpCodeProvider();
-
-			// Generate the code and put it in the text box:
-			using(var sw = new StringWriter()) {
-				codeProvider.GenerateCodeFromCompileUnit(razorResult.GeneratedCode, sw, new CodeGeneratorOptions());
-				Debug.WriteLine(sw.GetStringBuilder().ToString());
-			}
-
-			// Compile the generated code into an assembly
-			var results = codeProvider.CompileAssemblyFromDom(
-			  new CompilerParameters(
-			    referencedAssemblies.Select(t=>t.CodeBase.Replace("file:///", "").Replace("/", "\\")).ToArray()
-				),
-			  razorResult.GeneratedCode
+			var parameters = new CompilerParameters(
+				AppDomain.CurrentDomain.GetAssemblies()
+					.Where(t => !t.IsDynamic)
+					.Concat(new[] { Assembly.Load("Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a") })
+					.Select(t => t.Location)
+					.ToArray()
 			);
-
-			// Check for compilation errors
+			var results = codeProvider.CompileAssemblyFromDom(parameters,codeCompileUnit);
 			if(results.Errors.HasErrors) {
 				var err = results.Errors
 					.OfType<CompilerError>()
@@ -61,36 +55,23 @@ namespace Mios.Mail.Templating {
 					"Error Compiling Template: ({0}, {1}) {2}",
 					err.Line, err.Column, err.ErrorText);
 			}
+			return results.CompiledAssembly;
+		}
 
-			// Get the template type
-			var typ = results.CompiledAssembly.GetType("RazorOutput.Template");
-			if(typ == null) {
+		private static T InstantiateTemplate<T>(Assembly templateAssembly, string typeName) where T: class {
+			var templateType = templateAssembly.GetType(typeName);
+			if(templateType == null) {
 				throw new RazorTemplateFactoryException(
-					"Could not find generated type in assembly {0}", 
-					results.CompiledAssembly.FullName);
+					"Could not find requested type {0} in assembly {1}", 
+					typeName, templateAssembly.FullName);
 			}
-
-			// Create instance
-			var newTemplate = Activator.CreateInstance(typ) as RazorTemplate<T>;
-			if(newTemplate == null) {
+			var template = Activator.CreateInstance(templateType) as T;
+			if(template == null) {
 				throw new RazorTemplateFactoryException(
 					"Could not construct template or it does not inherit from {0}",
-					typeof(RazorTemplate<T>).Name);
+					typeof(T).Name);
 			}
-			return newTemplate;
-		}
-
-		protected static RazorTemplateEngine CreateEngine() {
-			return CreateEngine<Object>();
-		}
-		protected static RazorTemplateEngine CreateEngine<T>() {
-			var host = new RazorEngineHost(new CSharpRazorCodeLanguage()) {
-				DefaultBaseClass = typeof(RazorTemplate<T>).FullName,
-				DefaultNamespace = "RazorOutput",
-				DefaultClassName = "Template",
-			};
-			host.NamespaceImports.Add("System");
-			return new RazorTemplateEngine(host);
+			return template;
 		}
 	}
 }
