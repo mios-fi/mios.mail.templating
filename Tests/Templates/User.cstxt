@@ -1,0 +1,3 @@
+﻿Hello @Model.Name
+@using Tests
+Hi there @Model.Name, how are you today?
