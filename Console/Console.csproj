@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{599F9B4B-934B-4F3A-884D-8425DC3E5EFE}</ProjectGuid>
+    <ProjectGuid>{5AFAAE30-1464-44D6-BA81-2364087F7A98}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Console</RootNamespace>
@@ -15,7 +15,7 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -47,9 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Templating\Templating.csproj">
-      <Project>{4204D4FC-801E-4A24-82B1-57D28F4C4E58}</Project>
-      <Name>Templating</Name>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{FDF52211-6BE8-41C8-BB71-F2C0C74BBAA7}</Project>
+      <Name>Library %28Mios.Mail.Templating\Library%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

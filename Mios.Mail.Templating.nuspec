@@ -2,13 +2,13 @@
 <package>
   <metadata>
     <id>mios.mail.templating</id>
-    <version>2.0.0.0</version>
+    <version>2.0.0.1</version>
     <authors>Mios</authors>
     <description>Framework for working with email templates.</description>
     <language>en</language>
   </metadata>
   <files>
-    <file src="Templating\bin\Release\*.dll" target="lib" />
-    <file src="Templating\bin\Release\*.xml" target="lib" />
+    <file src="Library\bin\Release\*.dll" target="lib" />
+    <file src="Library\bin\Release\*.xml" target="lib" />
   </files>
 </package>
