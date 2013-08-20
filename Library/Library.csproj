@@ -8,8 +8,8 @@
     <ProjectGuid>{FDF52211-6BE8-41C8-BB71-F2C0C74BBAA7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Library</RootNamespace>
-    <AssemblyName>Library</AssemblyName>
+    <RootNamespace>Mios.Mail.Templating</RootNamespace>
+    <AssemblyName>Mios.Mail.Templating</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
