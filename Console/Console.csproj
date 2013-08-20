@@ -49,7 +49,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{FDF52211-6BE8-41C8-BB71-F2C0C74BBAA7}</Project>
-      <Name>Library %28Mios.Mail.Templating\Library%29</Name>
+      <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
