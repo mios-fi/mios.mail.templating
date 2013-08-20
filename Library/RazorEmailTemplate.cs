@@ -25,7 +25,7 @@ namespace Mios.Mail.Templating {
 			if(htmlTemplate!=null) {
 				var htmlBody = htmlTemplate.Execute(model);
 				var stream = new MemoryStream(Encoding.UTF8.GetBytes(htmlBody));
-				var htmlView = new AlternateView(stream, new ContentType("text/html") { CharSet = "utf8" });
+				var htmlView = new AlternateView(stream, new ContentType("text/html") { CharSet = "utf-8" });
 				message.AlternateViews.Add(htmlView);
 			}
 			return message;
