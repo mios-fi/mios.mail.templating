@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RazorTemplating")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mios.Mail.Templating")]
+[assembly: AssemblyDescription("Library for generating e-mails from Razor templates")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Mios e-Solutions")]
-[assembly: AssemblyProduct("RazorTemplating")]
+[assembly: AssemblyProduct("Mios.Mail.Templating")]
 [assembly: AssemblyCopyright("Copyright © Mios e-Solutions")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.1.0")]
-[assembly: AssemblyFileVersion("2.0.1.0")]
+[assembly: AssemblyVersion("2.1.1.0")]
+[assembly: AssemblyFileVersion("2.1.1.0")]
