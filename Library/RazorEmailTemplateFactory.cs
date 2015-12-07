@@ -3,13 +3,18 @@ using System.IO;
 
 namespace Mios.Mail.Templating {
 	public class RazorEmailTemplateFactory {
+		public RazorTemplateFactory templateFactory;
+		public RazorEmailTemplateFactory() : this(new RazorTemplateFactory()) {
+		}
+		public RazorEmailTemplateFactory(RazorTemplateFactory templateFactory) {
+			this.templateFactory = templateFactory;
+		}
 		public IEmailTemplate<dynamic> Create(string textTemplateFileName, string htmlTemplateFileName) {
-			var factory = new RazorTemplateFactory();
-			return Create(factory.CreateDynamicTemplate, textTemplateFileName, htmlTemplateFileName);
+			return Create(templateFactory.CreateDynamicTemplate, textTemplateFileName, htmlTemplateFileName);
 		}
 		public IEmailTemplate<T> Create<T>(string textTemplateFileName, string htmlTemplateFileName) {
 			var factory = new RazorTemplateFactory();
-			return Create(factory.CreateTemplate<T>,textTemplateFileName,htmlTemplateFileName);
+			return Create(templateFactory.CreateTemplate<T>,textTemplateFileName,htmlTemplateFileName);
 		}
 		private IEmailTemplate<T> Create<T>(Func<TextReader,RazorTemplate<T>> factory, string textTemplateFileName, string htmlTemplateFileName) {
 			// Load subject and body from required text template

@@ -20,29 +20,40 @@ namespace Mios.Mail.Templating {
 	}
 
 	public class RazorTemplateFactory {
+		public IList<string> NamespaceImports { get; protected set; }
+		public IList<string> AssemblyReferences { get; protected set; }
+		public RazorTemplateFactory() {
+			NamespaceImports = new List<string>();
+			AssemblyReferences = new List<string>();
+		}
 		public RazorTemplate<T> CreateTemplate<T>(TextReader sourceReader) {
-			return CreateTemplateImpl<RazorTemplate<T>>(sourceReader);
+			return CreateTemplateImpl<RazorTemplate<T>>(sourceReader, NamespaceImports, AssemblyReferences);
+		}
 		}
 		public DynamicRazorTemplate CreateDynamicTemplate(TextReader sourceReader) {
-			return CreateTemplateImpl<DynamicRazorTemplate>(sourceReader);
+			return CreateTemplateImpl<DynamicRazorTemplate>(sourceReader, NamespaceImports, AssemblyReferences);
+		}
 		}
 
-		private static T CreateTemplateImpl<T>(TextReader sourceReader) where T : class {
+		private static T CreateTemplateImpl<T>(TextReader sourceReader, IEnumerable<string> namespaceImports, IEnumerable<string> assemblyReferences) where T : class {
 			var host = new RazorEngineHost(new CSharpRazorCodeLanguage());
 			host.DefaultBaseClass = typeof(T).FullName;
 			host.NamespaceImports.Add("System");
+			foreach(var ns in namespaceImports)
+				host.NamespaceImports.Add(ns);
 			var result = new RazorTemplateEngine(host).GenerateCode(sourceReader);
-			var templateAssembly = CompileTemplate(result.GeneratedCode);
+			var templateAssembly = CompileTemplate(result.GeneratedCode, assemblyReferences);
 			var typeName = host.DefaultNamespace+"."+host.DefaultClassName;
 			return InstantiateTemplate<T>(templateAssembly, typeName);
 		}
 
-		private static Assembly CompileTemplate(CodeCompileUnit codeCompileUnit) {
+		private static Assembly CompileTemplate(CodeCompileUnit codeCompileUnit, IEnumerable<string> assemblyReferences) {
 			var codeProvider = new CSharpCodeProvider();
 			var parameters = new CompilerParameters(
 				AppDomain.CurrentDomain.GetAssemblies()
 					.Where(t => !t.IsDynamic)
 					.Concat(new[] { Assembly.Load("Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a") })
+					.Concat(assemblyReferences.Select(t => Assembly.Load(t)))
 					.Select(t => t.Location)
 					.ToArray()
 			);
