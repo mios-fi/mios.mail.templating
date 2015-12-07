@@ -10,20 +10,13 @@ namespace Mios.Mail.Templating {
 			this.templateFactory = templateFactory;
 		}
 		public IEmailTemplate<dynamic> Create(string textTemplateFileName, string htmlTemplateFileName) {
-			return Create(templateFactory.CreateDynamicTemplate, textTemplateFileName, htmlTemplateFileName);
+			return Create(templateFactory.CreateDynamicTemplate, templateFactory.CreateDynamicHtmlTemplate, textTemplateFileName, htmlTemplateFileName);
 		}
 		public IEmailTemplate<T> Create<T>(string textTemplateFileName, string htmlTemplateFileName) {
 			var factory = new RazorTemplateFactory();
-			return Create(templateFactory.CreateTemplate<T>, textTemplateFileName, htmlTemplateFileName);
+			return Create(templateFactory.CreateTemplate<T>, templateFactory.CreateHtmlTemplate<T>, textTemplateFileName,htmlTemplateFileName);
 		}
-		public IEmailTemplate<dynamic> CreateHtml(string textTemplateFileName, string htmlTemplateFileName) {
-			return Create(templateFactory.CreateDynamicHtmlTemplate, textTemplateFileName, htmlTemplateFileName);
-		}
-		public IEmailTemplate<T> CreateHtml<T>(string textTemplateFileName, string htmlTemplateFileName) {
-			var factory = new RazorTemplateFactory();
-			return Create(templateFactory.CreateHtmlTemplate<T>, textTemplateFileName, htmlTemplateFileName);
-		}
-		private IEmailTemplate<T> Create<T>(Func<TextReader, RazorTemplate<T>> factory, string textTemplateFileName, string htmlTemplateFileName) {
+		private IEmailTemplate<T> Create<T>(Func<TextReader,RazorTemplate<T>> textFactory, Func<TextReader,RazorHtmlTemplate<T>> htmlFactory, string textTemplateFileName, string htmlTemplateFileName) {
 			// Load subject and body from required text template
 			RazorTemplate<T> subjectTemplate, textTemplate;
 			using(var reader = OpenTemplateReader(textTemplateFileName)) {
@@ -31,13 +24,13 @@ namespace Mios.Mail.Templating {
 					throw new FileNotFoundException(textTemplateFileName);
 				}
 				var subjectLine = reader.ReadLine();
-				subjectTemplate = factory(new StringReader(subjectLine ?? String.Empty));
-				textTemplate = factory(reader);
+				subjectTemplate = textFactory(new StringReader(subjectLine ?? String.Empty));
+				textTemplate = textFactory(reader);
 			}
 			// Load optional html template if defined
-			RazorTemplate<T> htmlTemplate;
+			RazorHtmlTemplate<T> htmlTemplate;
 			using(var reader = OpenTemplateReader(htmlTemplateFileName)) {
-				htmlTemplate = reader!=null ? factory(reader) : null;
+				htmlTemplate = reader!=null ? htmlFactory(reader) : null;
 			}
 			return new RazorEmailTemplate<T>(subjectTemplate, textTemplate, htmlTemplate);
 		}
