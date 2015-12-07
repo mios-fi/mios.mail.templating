@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,10 +30,14 @@ namespace Mios.Mail.Templating {
 		public RazorTemplate<T> CreateTemplate<T>(TextReader sourceReader) {
 			return CreateTemplateImpl<RazorTemplate<T>>(sourceReader, NamespaceImports, AssemblyReferences);
 		}
+		public RazorHtmlTemplate<T> CreateHtmlTemplate<T>(TextReader sourceReader) {
+			return CreateTemplateImpl<RazorHtmlTemplate<T>>(sourceReader, NamespaceImports, AssemblyReferences);
 		}
 		public DynamicRazorTemplate CreateDynamicTemplate(TextReader sourceReader) {
 			return CreateTemplateImpl<DynamicRazorTemplate>(sourceReader, NamespaceImports, AssemblyReferences);
 		}
+		public DynamicRazorHtmlTemplate CreateDynamicHtmlTemplate(TextReader sourceReader) {
+			return CreateTemplateImpl<DynamicRazorHtmlTemplate>(sourceReader, NamespaceImports, AssemblyReferences);
 		}
 
 		private static T CreateTemplateImpl<T>(TextReader sourceReader, IEnumerable<string> namespaceImports, IEnumerable<string> assemblyReferences) where T : class {

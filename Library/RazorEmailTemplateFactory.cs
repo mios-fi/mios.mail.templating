@@ -14,9 +14,16 @@ namespace Mios.Mail.Templating {
 		}
 		public IEmailTemplate<T> Create<T>(string textTemplateFileName, string htmlTemplateFileName) {
 			var factory = new RazorTemplateFactory();
-			return Create(templateFactory.CreateTemplate<T>,textTemplateFileName,htmlTemplateFileName);
+			return Create(templateFactory.CreateTemplate<T>, textTemplateFileName, htmlTemplateFileName);
 		}
-		private IEmailTemplate<T> Create<T>(Func<TextReader,RazorTemplate<T>> factory, string textTemplateFileName, string htmlTemplateFileName) {
+		public IEmailTemplate<dynamic> CreateHtml(string textTemplateFileName, string htmlTemplateFileName) {
+			return Create(templateFactory.CreateDynamicHtmlTemplate, textTemplateFileName, htmlTemplateFileName);
+		}
+		public IEmailTemplate<T> CreateHtml<T>(string textTemplateFileName, string htmlTemplateFileName) {
+			var factory = new RazorTemplateFactory();
+			return Create(templateFactory.CreateHtmlTemplate<T>, textTemplateFileName, htmlTemplateFileName);
+		}
+		private IEmailTemplate<T> Create<T>(Func<TextReader, RazorTemplate<T>> factory, string textTemplateFileName, string htmlTemplateFileName) {
 			// Load subject and body from required text template
 			RazorTemplate<T> subjectTemplate, textTemplate;
 			using(var reader = OpenTemplateReader(textTemplateFileName)) {
