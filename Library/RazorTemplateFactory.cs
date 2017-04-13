@@ -60,8 +60,10 @@ namespace Mios.Mail.Templating {
 					.Concat(new[] { Assembly.Load("Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a") })
 					.Concat(assemblyReferences.Select(t => Assembly.Load(t)))
 					.Select(t => t.Location)
+					.Distinct()
 					.ToArray()
 			);
+			parameters.GenerateInMemory = true;
 			var results = codeProvider.CompileAssemblyFromDom(parameters,codeCompileUnit);
 			if(results.Errors.HasErrors) {
 				var err = results.Errors
